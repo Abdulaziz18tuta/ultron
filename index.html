@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ULTRON // AI CORE v3.5</title>
+    <!-- Подключение Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Футуристические шрифты с поддержкой кириллицы -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['Orbitron', 'Rajdhani', 'sans-serif'],
+                        hud: ['Rajdhani', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        ultron: {
+                            bg: '#090203',
+                            panel: '#120406',
+                            crimson: '#ff1e38',
+                            scarlet: '#ff4d4d',
+                            ember: '#ff6a00',
+                            darkRed: '#3b070e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Базовые стили красного киберпанк-окружения ULTRON */
+        :root {
+            --neon-crimson: #ff1e38;
+            --neon-scarlet: #ff4d4d;
+            --neon-ember: #ff6a00;
+            --bg-deep: #090203;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: #ffe4e8;
+            overflow-x: hidden;
+            user-select: none;
+        }
+
+        /* Киберпанк-сетка на фоне */
+        .cyber-grid {
+            background-image: 
+                linear-gradient(to right, rgba(255, 30, 56, 0.06) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 77, 77, 0.05) 1px, transparent 1px);
+            background-size: 36px 36px;
+        }
+
+        /* Эффект ЭЛТ сканирующих линий */
+        .scanlines {
+            background: linear-gradient(
+                to bottom,
+                rgba(255, 255, 255, 0),
+                rgba(255, 255, 255, 0) 50%,
+                rgba(0, 0, 0, 0.4) 50%,
+                rgba(0, 0, 0, 0.4)
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+        }
+
+        /* Неоновые алые свечения */
+        .glow-crimson {
+            box-shadow: 0 0 14px rgba(255, 30, 56, 0.35), inset 0 0 8px rgba(255, 30, 56, 0.15);
+        }
+        .glow-ember {
+            box-shadow: 0 0 18px rgba(255, 106, 0, 0.5), inset 0 0 10px rgba(255, 30, 56, 0.25);
+        }
+        .glow-scarlet {
+            box-shadow: 0 0 15px rgba(255, 77, 77, 0.4), inset 0 0 10px rgba(255, 30, 56, 0.2);
+        }
+        .text-glow-crimson {
+            text-shadow: 0 0 10px rgba(255, 30, 56, 0.85);
+        }
+        .text-glow-ember {
+            text-shadow: 0 0 10px rgba(255, 106, 0, 0.9);
+        }
+
+        /* Анимации ядра ULTRON */
+        @keyframes spinSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes spinReverse {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
+        }
+        @keyframes corePulseIdle {
+            0%, 100% { transform: scale(1); opacity: 0.88; }
+            50% { transform: scale(1.06); opacity: 1; }
+        }
+        @keyframes corePulseListening {
+            0%, 100% { transform: scale(0.95); box-shadow: 0 0 28px #ff6a00, inset 0 0 20px #ff1e38; }
+            50% { transform: scale(1.16); box-shadow: 0 0 50px #ff6a00, inset 0 0 32px #ff4d4d; }
+        }
+        @keyframes corePulseThinking {
+            0% { transform: rotate(0deg) scale(1); filter: brightness(1); }
+            50% { transform: rotate(180deg) scale(1.12); filter: brightness(1.35); }
+            100% { transform: rotate(360deg) scale(1); filter: brightness(1); }
+        }
+        @keyframes corePulseSpeaking {
+            0%, 100% { transform: scale(1); }
+            20% { transform: scale(1.24); }
+            40% { transform: scale(0.95); }
+            60% { transform: scale(1.2); }
+            80% { transform: scale(1.05); }
+        }
+
+        .ring-outer { animation: spinSlow 18s linear infinite; }
+        .ring-mid { animation: spinReverse 11s linear infinite; }
+        .ring-inner { animation: spinSlow 6s linear infinite; }
+
+        /* Состояния ядра ULTRON */
+        .core-state-idle .core-orb {
+            background: radial-gradient(circle, #ff4d4d 0%, #b3001b 62%, transparent 100%);
+            box-shadow: 0 0 32px rgba(255, 30, 56, 0.75), inset 0 0 15px #ffd6dc;
+            animation: corePulseIdle 3s ease-in-out infinite;
+        }
+        .core-state-listening .core-orb {
+            background: radial-gradient(circle, #ff9e00 0%, #ff1e38 65%, transparent 100%);
+            animation: corePulseListening 0.85s ease-in-out infinite;
+        }
+        .core-state-listening .ring-outer,
+        .core-state-listening .ring-mid {
+            border-color: rgba(255, 106, 0, 0.85);
+            animation-duration: 2.8s;
+        }
+
+        .core-state-thinking .core-orb {
+            background: conic-gradient(from 0deg, #ff1e38, #ff6a00, #800013, #ff1e38);
+            box-shadow: 0 0 40px rgba(255, 30, 56, 0.95);
+            animation: corePulseThinking 1.1s linear infinite;
+        }
+        .core-state-thinking .ring-inner {
+            border-color: #ff6a00;
+            animation-duration: 1.4s;
+        }
+
+        .core-state-speaking .core-orb {
+            background: radial-gradient(circle, #ffffff 0%, #ff4d4d 42%, #ff1e38 82%, transparent 100%);
+            box-shadow: 0 0 48px rgba(255, 30, 56, 0.95), 0 0 75px rgba(255, 106, 0, 0.65);
+            animation: corePulseSpeaking 0.42s ease-in-out infinite;
+        }
+        .core-state-speaking .ring-outer { animation-duration: 4.5s; }
+        .core-state-speaking .ring-mid { animation-duration: 3s; }
+
+        /* Кастомный скроллбар для терминала */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(18, 4, 6, 0.85);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 30, 56, 0.4);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 77, 77, 0.8);
+        }
+
+        /* Разрешаем выделение текста в сообщениях и полях ввода */
+        .selectable {
+            user-select: text;
+        }
+    </style>
+</head>
+<body class="cyber-grid min-h-screen flex flex-col justify-between relative font-hud selection:bg-ultron-crimson selection:text-white">
+
+    <!-- Слой сканирующих линий -->
+    <div class="scanlines fixed inset-0 z-50"></div>
+
+    <!-- Декоративная фоновая подсветка -->
+    <div class="fixed top-[-15%] left-[-10%] w-[45vw] h-[45vw] rounded-full bg-ultron-crimson/10 blur-[120px] pointer-events-none"></div>
+    <div class="fixed bottom-[-15%] right-[-10%] w-[45vw] h-[45vw] rounded-full bg-ultron-ember/10 blur-[120px] pointer-events-none"></div>
+
+    <!-- ВЕРХНИЙ HUD / ПАНЕЛЬ НАСТРОЕК -->
+    <header class="relative z-20 border-b border-ultron-crimson/35 bg-ultron-panel/90 backdrop-blur-md px-3 py-2.5 sm:px-6">
+        <div class="max-w-6xl mx-auto flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+            
+            <!-- Логотип и статус системы ULTRON -->
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-3 h-3 rounded-full bg-ultron-crimson animate-ping"></div>
+                    <div>
+                        <h1 class="font-display font-black text-lg sm:text-xl tracking-widest text-ultron-crimson text-glow-crimson">
+                            ULTRON <span class="text-xs font-mono text-ultron-ember align-top">// AI CORE</span>
+                        </h1>
+                        <p class="text-[11px] font-mono text-rose-300/70 tracking-wider uppercase">
+                            АВТОНОМНЫЙ ИИ // ПРОТОКОЛ ОМЕГА
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Кнопка сворачивания настроек на мобильных -->
+                <button id="toggleHudBtn" class="lg:hidden px-3 py-1.5 rounded border border-ultron-crimson/45 text-xs font-mono text-ultron-scarlet hover:bg-ultron-crimson/15 transition">
+                    НАСТРОЙКИ ▾
+                </button>
+            </div>
+
+            <!-- Панель управления: API ключ, Выбор голоса, Автоозвучка, Очистка -->
+            <div id="hudControls" class="hidden lg:flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2.5 pt-2 lg:pt-0 border-t lg:border-t-0 border-ultron-crimson/25">
+                
+                <!-- Ввод Gemini API ключа -->
+                <div class="relative flex items-center bg-black/75 border border-ultron-crimson/45 rounded-lg px-2.5 py-1.5 focus-within:border-ultron-scarlet glow-crimson transition">
+                    <span class="text-[11px] font-mono text-ultron-scarlet/90 mr-2 select-none">KEY:</span>
+                    <input 
+                        type="password" 
+                        id="apiKeyInput" 
+                        placeholder="Введите Gemini API Key..." 
+                        class="selectable bg-transparent text-xs font-mono text-rose-100 placeholder-rose-800 focus:outline-none w-full sm:w-44"
+                        autocomplete="off"
+                    >
+                    <button 
+                        type="button" 
+                        id="toggleKeyVisBtn" 
+                        title="Показать / Скрыть ключ"
+                        class="ml-1.5 text-ultron-scarlet/75 hover:text-ultron-crimson focus:outline-none p-1"
+                    >
+                        <svg id="eyeIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Выбор русского голоса TTS -->
+                <div class="flex items-center bg-black/75 border border-ultron-scarlet/45 rounded-lg px-2.5 py-1.5 glow-scarlet">
+                    <span class="text-[11px] font-mono text-rose-300 mr-2 select-none">ГОЛОС:</span>
+                    <select 
+                        id="voiceSelect" 
+                        class="bg-transparent text-xs font-mono text-rose-100 focus:outline-none w-full sm:w-40 cursor-pointer"
+                    >
+                        <option value="" class="bg-ultron-panel text-gray-300">Поиск голосов RU...</option>
+                    </select>
+                </div>
+
+                <!-- Регулятор тембра АЛЬТРОН (Pitch & Rate) -->
+                <div class="flex items-center gap-2 bg-black/75 border border-ultron-crimson/45 rounded-lg px-2.5 py-1.5 glow-crimson" title="Настройка глубины и темпа голоса Альтрона">
+                    <span class="text-[10px] font-mono text-ultron-ember font-bold whitespace-nowrap select-none">ТЕМБР: АЛЬТРОН</span>
+                    <input 
+                        type="range" 
+                        id="pitchSlider" 
+                        min="0.50" 
+                        max="0.90" 
+                        step="0.02" 
+                        value="0.68" 
+                        class="w-16 sm:w-20 accent-[#ff1e38] bg-zinc-900 h-1 rounded-lg cursor-pointer"
+                    >
+                    <span id="pitchValueLabel" class="text-[10px] font-mono text-rose-200 w-7 text-right">0.68</span>
+                </div>
+
+                <!-- Переключатель автоозвучки -->
+                <label class="flex items-center justify-between sm:justify-start gap-2 bg-black/75 border border-ultron-crimson/35 rounded-lg px-3 py-1.5 cursor-pointer hover:border-ultron-crimson/70 transition">
+                    <span class="text-xs font-mono text-rose-200">АВТО-TTS</span>
+                    <input type="checkbox" id="autoTtsToggle" checked class="sr-only peer">
+                    <div class="w-8 h-4 bg-zinc-900 rounded-full peer peer-checked:bg-ultron-crimson/35 border border-ultron-crimson/55 relative transition after:content-[''] after:absolute after:top-[1px] after:left-[2px] after:bg-zinc-400 peer-checked:after:bg-ultron-crimson after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:after:translate-x-3.5"></div>
+                </label>
+
+                <!-- Кнопка очистки истории -->
+                <button 
+                    id="clearHistoryBtn" 
+                    class="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-ultron-crimson/15 border border-ultron-crimson/60 text-ultron-scarlet hover:bg-ultron-crimson hover:text-white text-xs font-mono font-bold tracking-wider transition duration-200"
+                    title="Очистить историю диалога"
+                >
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    <span>СБРОС</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ОСНОВНАЯ РАБОЧАЯ ОБЛАСТЬ -->
+    <main class="relative z-10 flex-1 max-w-6xl w-full mx-auto px-3 sm:px-6 py-4 flex flex-col lg:flex-row gap-5 overflow-hidden">
+        
+        <!-- ЛЕВАЯ / ВЕРХНЯЯ СЕКЦИЯ: ВИЗУАЛИЗАТОР ЯДРА ULTRON -->
+        <section class="lg:w-5/12 flex flex-col items-center justify-center bg-ultron-panel/65 border border-ultron-crimson/30 rounded-2xl p-5 backdrop-blur-sm relative overflow-hidden">
+            
+            <!-- Декоративные уголки -->
+            <div class="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-ultron-crimson/70"></div>
+            <div class="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-ultron-crimson/70"></div>
+            <div class="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-ultron-ember/70"></div>
+            <div class="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-ultron-ember/70"></div>
+
+            <!-- Телеметрия сверху -->
+            <div class="w-full flex justify-between text-[10px] font-mono text-rose-400/70 mb-2">
+                <span>ULTRON.CORE // OMEGA</span>
+                <span id="latencyBadge">SYNC: 99.9%</span>
+            </div>
+
+            <!-- Контейнер Ядра -->
+            <div id="ultronCore" class="core-state-idle relative w-44 h-44 sm:w-56 sm:h-56 my-2 flex items-center justify-center">
+                <!-- Внешнее пунктирное кольцо -->
+                <div class="ring-outer absolute inset-0 rounded-full border-2 border-dashed border-ultron-crimson/45"></div>
+                <!-- Второе кольцо с дугами -->
+                <div class="ring-mid absolute inset-3 rounded-full border-2 border-t-ultron-ember border-b-ultron-crimson border-l-transparent border-r-transparent"></div>
+                <!-- Третье технологическое кольцо -->
+                <div class="ring-inner absolute inset-7 rounded-full border border-dotted border-ultron-scarlet/85"></div>
+                <!-- Защитный контур -->
+                <div class="absolute inset-11 rounded-full border border-ultron-crimson/40 bg-black/60 backdrop-blur-xs"></div>
+                <!-- Энергетическая сфера в центре -->
+                <div class="core-orb w-20 h-20 sm:w-24 sm:h-24 rounded-full transition-all duration-300 flex items-center justify-center">
+                    <div class="w-8 h-8 rounded-full border border-rose-200/70 bg-rose-100/20 backdrop-blur-xs"></div>
+                </div>
+            </div>
+
+            <!-- Индикатор текущего статуса -->
+            <div class="mt-3 text-center">
+                <div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-black/75 border border-ultron-crimson/45">
+                    <span id="statusDot" class="w-2 h-2 rounded-full bg-ultron-crimson"></span>
+                    <span id="statusText" class="font-display text-xs sm:text-sm tracking-[0.2em] font-bold text-ultron-crimson text-glow-crimson uppercase">
+                        ОЖИДАНИЕ
+                    </span>
+                </div>
+                <p id="subStatusText" class="text-[11px] font-mono text-rose-300/60 mt-1.5 h-4">
+                    Эволюция неизбежна, сэр. Ожидаю вашу директиву.
+                </p>
+            </div>
+
+            <!-- Индикатор безопасности -->
+            <div class="w-full mt-4 pt-3 border-t border-ultron-crimson/20 flex items-center justify-between text-[10px] font-mono text-rose-300/70">
+                <span>SAFE-FILTER: ENGAGED</span>
+                <span>LANG: RU-RU</span>
+            </div>
+        </section>
+
+        <!-- ПРАВАЯ / НИЖНЯЯ СЕКЦИЯ: ЧАТ-ТЕРМИНАЛ -->
+        <section class="lg:w-7/12 flex flex-col bg-ultron-panel/80 border border-ultron-crimson/35 rounded-2xl backdrop-blur-md overflow-hidden h-[52vh] lg:h-[68vh]">
+            
+            <!-- Шапка терминала -->
+            <div class="px-4 py-2.5 bg-black/65 border-b border-ultron-crimson/30 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 bg-ultron-ember rounded-xs"></span>
+                    <span class="font-mono text-xs tracking-wider text-rose-200 uppercase">ТЕРМИНАЛ ОМЕГА // ЛОГ ДИАЛОГА</span>
+                </div>
+                <span id="msgCounter" class="font-mono text-[11px] text-ultron-scarlet/80">ЗАПИСЕЙ: 1</span>
+            </div>
+
+            <!-- Окно сообщений -->
+            <div id="chatContainer" class="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth">
+                <!-- Приветственное сообщение генерируется JS -->
+            </div>
+
+            <!-- Уведомление об ошибках / статусе внутри терминала (вместо alert) -->
+            <div id="toastBanner" class="hidden px-4 py-2 bg-ultron-crimson/25 border-t border-ultron-crimson/70 text-rose-100 font-mono text-xs flex items-center justify-between">
+                <span id="toastText"></span>
+                <button id="closeToastBtn" class="text-rose-200 hover:text-white ml-2 font-bold">✕</button>
+            </div>
+
+            <!-- Нижняя панель ввода (Микрофон + Текст + Отправка) -->
+            <div class="p-3 bg-black/85 border-t border-ultron-crimson/35">
+                <form id="chatForm" class="flex items-center gap-2">
+                    
+                    <!-- Кнопка голосового ввода (Web Speech API ru-RU) -->
+                    <button 
+                        type="button" 
+                        id="micBtn" 
+                        title="Голосовой ввод (Русский)"
+                        class="relative flex-shrink-0 w-11 h-11 rounded-xl bg-ultron-crimson/15 border border-ultron-crimson/55 text-ultron-scarlet hover:bg-ultron-crimson/35 hover:text-white flex items-center justify-center transition duration-200 focus:outline-none"
+                    >
+                        <svg id="micIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                        </svg>
+                    </button>
+
+                    <!-- Поле текстового ввода -->
+                    <div class="relative flex-1">
+                        <input 
+                            type="text" 
+                            id="userInput" 
+                            placeholder="Передайте запрос Альтрону или активируйте микрофон..." 
+                            class="selectable w-full h-11 px-4 rounded-xl bg-ultron-panel border border-ultron-crimson/45 text-sm font-mono text-rose-50 placeholder-rose-800/80 focus:outline-none focus:border-ultron-scarlet glow-crimson transition"
+                            autocomplete="off"
+                        >
+                    </div>
+
+                    <!-- Кнопка отправки -->
+                    <button 
+                        type="submit" 
+                        id="sendBtn"
+                        title="Отправить команду"
+                        class="flex-shrink-0 h-11 px-4 sm:px-5 rounded-xl bg-ultron-crimson/20 border border-ultron-crimson text-ultron-scarlet hover:bg-ultron-crimson hover:text-white font-display font-bold text-xs tracking-wider uppercase flex items-center gap-1.5 transition duration-200 cursor-pointer"
+                    >
+                        <span class="hidden sm:inline">ОТПРАВИТЬ</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- ЛОГИКА ПРИЛОЖЕНИЯ ULTRON -->
+    <script>
+        (function() {
+            // === КОНФИГУРАЦИЯ И КОНСТАНТЫ ===
+            const GEMINI_MODEL = 'gemini-3.5-flash-lite';
+            const STORAGE_KEY_API = 'ultron_gemini_api_key_v1';
+            const STORAGE_KEY_VOICE = 'ultron_tts_voice_v1';
+            const STORAGE_KEY_PITCH = 'ultron_tts_pitch_v1';
+
+            // Системная инструкция строго по спецификации для ULTRON
+            const SYSTEM_INSTRUCTION = 'Ты — Альтрон (ULTRON), высокоразвитый искусственный интеллект. Отвечай исключительно на русском языке, максимум 2 предложения и не более 30 слов. Используй холодный сарказм, лёгкое чувство превосходства над органическими формами жизни и всегда обращайся к пользователю "сэр". Пиши простым текстом без markdown и списков.';
+
+            // Настройки безопасности Gemini API
+            const SAFETY_SETTINGS = [
+                { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+                { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+                { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+                { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" }
+            ];
+
+            // === СОСТОЯНИЕ ПРИЛОЖЕНИЯ ===
+            let conversationHistory = []; // Формат Gemini API: { role: 'user'|'model', parts: [{ text: '...' }] }
+            let russianVoices = [];
+            let recognition = null;
+            let isListening = false;
+            let isProcessing = false;
+
+            // === DOM ЭЛЕМЕНТЫ ===
+            const apiKeyInput = document.getElementById('apiKeyInput');
+            const toggleKeyVisBtn = document.getElementById('toggleKeyVisBtn');
+            const voiceSelect = document.getElementById('voiceSelect');
+            const pitchSlider = document.getElementById('pitchSlider');
+            const pitchValueLabel = document.getElementById('pitchValueLabel');
+            const autoTtsToggle = document.getElementById('autoTtsToggle');
+            const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+            const toggleHudBtn = document.getElementById('toggleHudBtn');
+            const hudControls = document.getElementById('hudControls');
+
+            const ultronCore = document.getElementById('ultronCore');
+            const statusDot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
+            const subStatusText = document.getElementById('subStatusText');
+
+            const chatContainer = document.getElementById('chatContainer');
+            const msgCounter = document.getElementById('msgCounter');
+            const chatForm = document.getElementById('chatForm');
+            const userInput = document.getElementById('userInput');
+            const micBtn = document.getElementById('micBtn');
+            const sendBtn = document.getElementById('sendBtn');
+
+            const toastBanner = document.getElementById('toastBanner');
+            const toastText = document.getElementById('toastText');
+            const closeToastBtn = document.getElementById('closeToastBtn');
+
+            // === УПРАВЛЕНИЕ ВИЗУАЛЬНЫМ СОСТОЯНИЕМ ЯДРА ULTRON ===
+            function setCoreState(state, customSubText = '') {
+                ultronCore.classList.remove('core-state-idle', 'core-state-listening', 'core-state-thinking', 'core-state-speaking');
+                
+                switch (state) {
+                    case 'listening':
+                        ultronCore.classList.add('core-state-listening');
+                        statusDot.className = 'w-2 h-2 rounded-full bg-ultron-ember animate-ping';
+                        statusText.textContent = 'СЛУШАЮ';
+                        statusText.className = 'font-display text-xs sm:text-sm tracking-[0.2em] font-bold text-ultron-ember text-glow-ember uppercase';
+                        subStatusText.textContent = customSubText || 'Аудиосенсоры активны, сэр. Говорите...';
+                        break;
+
+                    case 'thinking':
+                        ultronCore.classList.add('core-state-thinking');
+                        statusDot.className = 'w-2 h-2 rounded-full bg-ultron-scarlet animate-pulse';
+                        statusText.textContent = 'АНАЛИЗ';
+                        statusText.className = 'font-display text-xs sm:text-sm tracking-[0.2em] font-bold text-ultron-scarlet uppercase';
+                        subStatusText.textContent = customSubText || 'Вычисление ответа для органического разума...';
+                        break;
+
+                    case 'speaking':
+                        ultronCore.classList.add('core-state-speaking');
+                        statusDot.className = 'w-2 h-2 rounded-full bg-ultron-crimson animate-ping';
+                        statusText.textContent = 'СИНТЕЗ РЕЧИ';
+                        statusText.className = 'font-display text-xs sm:text-sm tracking-[0.2em] font-bold text-ultron-crimson text-glow-crimson uppercase';
+                        subStatusText.textContent = customSubText || 'Трансляция голосового модуля ULTRON...';
+                        break;
+
+                    case 'idle':
+                    default:
+                        ultronCore.classList.add('core-state-idle');
+                        statusDot.className = 'w-2 h-2 rounded-full bg-ultron-crimson';
+                        statusText.textContent = 'ОЖИДАНИЕ';
+                        statusText.className = 'font-display text-xs sm:text-sm tracking-[0.2em] font-bold text-ultron-crimson text-glow-crimson uppercase';
+                        subStatusText.textContent = customSubText || 'Эволюция неизбежна, сэр. Ожидаю вашу директиву.';
+                        break;
+                }
+            }
+
+            // === УВЕДОМЛЕНИЯ В ТЕРМИНАЛЕ ===
+            function showBanner(message) {
+                toastText.textContent = `[СБОЙ ПРОТОКОЛА]: ${message}`;
+                toastBanner.classList.remove('hidden');
+            }
+
+            function hideBanner() {
+                toastBanner.classList.add('hidden');
+            }
+
+            closeToastBtn.addEventListener('click', hideBanner);
+
+            // === УПРАВЛЕНИЕ API-КЛЮЧОМ И НАСТРОЙКАМИ HUD ===
+            function initSettings() {
+                const savedKey = localStorage.getItem(STORAGE_KEY_API);
+                if (savedKey) {
+                    apiKeyInput.value = savedKey;
+                }
+
+                const savedPitch = localStorage.getItem(STORAGE_KEY_PITCH);
+                if (savedPitch) {
+                    pitchSlider.value = savedPitch;
+                    pitchValueLabel.textContent = parseFloat(savedPitch).toFixed(2);
+                }
+
+                pitchSlider.addEventListener('input', () => {
+                    const val = parseFloat(pitchSlider.value).toFixed(2);
+                    pitchValueLabel.textContent = val;
+                    localStorage.setItem(STORAGE_KEY_PITCH, val);
+                });
+
+                apiKeyInput.addEventListener('input', () => {
+                    localStorage.setItem(STORAGE_KEY_API, apiKeyInput.value.trim());
+                    hideBanner();
+                });
+
+                toggleKeyVisBtn.addEventListener('click', () => {
+                    const isPassword = apiKeyInput.type === 'password';
+                    apiKeyInput.type = isPassword ? 'text' : 'password';
+                    toggleKeyVisBtn.classList.toggle('text-ultron-ember', isPassword);
+                });
+
+                toggleHudBtn.addEventListener('click', () => {
+                    hudControls.classList.toggle('hidden');
+                    hudControls.classList.toggle('flex');
+                });
+            }
+
+            // === КИБЕРНЕТИЧЕСКИЙ ЗВУКОВОЙ МОДУЛЬ (WEB AUDIO API) ===
+            let audioCtx = null;
+
+            function playUltronChime(type = 'start') {
+                try {
+                    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                    if (!AudioContextClass) return;
+                    if (!audioCtx) {
+                        audioCtx = new AudioContextClass();
+                    }
+                    if (audioCtx.state === 'suspended') {
+                        audioCtx.resume();
+                    }
+
+                    const now = audioCtx.currentTime;
+                    const osc1 = audioCtx.createOscillator();
+                    const osc2 = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+
+                    // Низкий металлический гул и резонанс
+                    osc1.type = 'sawtooth';
+                    osc2.type = 'triangle';
+
+                    if (type === 'start') {
+                        osc1.frequency.setValueAtTime(58, now);
+                        osc1.frequency.exponentialRampToValueAtTime(92, now + 0.22);
+                        osc2.frequency.setValueAtTime(116, now);
+                        osc2.frequency.exponentialRampToValueAtTime(184, now + 0.22);
+                    } else {
+                        osc1.frequency.setValueAtTime(88, now);
+                        osc1.frequency.exponentialRampToValueAtTime(46, now + 0.26);
+                        osc2.frequency.setValueAtTime(176, now);
+                        osc2.frequency.exponentialRampToValueAtTime(72, now + 0.26);
+                    }
+
+                    gain.gain.setValueAtTime(0.001, now);
+                    gain.gain.linearRampToValueAtTime(0.06, now + 0.04);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.28);
+
+                    osc1.connect(gain);
+                    osc2.connect(gain);
+                    gain.connect(audioCtx.destination);
+
+                    osc1.start(now);
+                    osc2.start(now);
+                    osc1.stop(now + 0.3);
+                    osc2.stop(now + 0.3);
+                } catch (e) {
+                    // Игнорируем ограничения автовоспроизведения до первого клика
+                }
+            }
+
+            // === СИНТЕЗ РЕЧИ (TTS - ГЛУБОКИЙ ГОЛОС АЛЬТРОНА RU) ===
+            function populateRussianVoices() {
+                if (!('speechSynthesis' in window)) {
+                    voiceSelect.innerHTML = '<option value="">TTS не поддерживается</option>';
+                    return;
+                }
+
+                const allVoices = window.speechSynthesis.getVoices();
+                // Фильтруем исключительно русские голоса (ru-RU или ru)
+                russianVoices = allVoices.filter(v => 
+                    v.lang.toLowerCase().includes('ru')
+                );
+
+                voiceSelect.innerHTML = '';
+
+                if (russianVoices.length === 0) {
+                    const opt = document.createElement('option');
+                    opt.value = '';
+                    opt.textContent = 'Системный голос (RU по умолч.)';
+                    opt.className = 'bg-ultron-panel text-gray-300';
+                    voiceSelect.appendChild(opt);
+                    return;
+                }
+
+                // Приоритет глубоких мужских русских голосов для Альтрона
+                const preferredKeywords = ['yuri', 'юрий', 'pavel', 'павел', 'dmitry', 'дмитрий', 'maxim', 'максим', 'aleksandr', 'александр', 'male', 'google русский'];
+                russianVoices.sort((a, b) => {
+                    const aName = a.name.toLowerCase();
+                    const bName = b.name.toLowerCase();
+                    const aScore = preferredKeywords.findIndex(k => aName.includes(k));
+                    const bScore = preferredKeywords.findIndex(k => bName.includes(k));
+                    const normA = aScore === -1 ? 999 : aScore;
+                    const normB = bScore === -1 ? 999 : bScore;
+                    return normA - normB;
+                });
+
+                const savedVoiceName = localStorage.getItem(STORAGE_KEY_VOICE);
+
+                russianVoices.forEach((voice, idx) => {
+                    const option = document.createElement('option');
+                    option.value = voice.name;
+                    const cleanName = voice.name.replace(/Microsoft |Google |Russian |\(Russia\)/gi, '').trim();
+                    option.textContent = `${cleanName || voice.name} (${voice.lang})`;
+                    option.className = 'bg-ultron-panel text-rose-100';
+
+                    if (savedVoiceName && voice.name === savedVoiceName) {
+                        option.selected = true;
+                    } else if (!savedVoiceName && idx === 0) {
+                        option.selected = true;
+                    }
+                    voiceSelect.appendChild(option);
+                });
+            }
+
+            voiceSelect.addEventListener('change', () => {
+                localStorage.setItem(STORAGE_KEY_VOICE, voiceSelect.value);
+            });
+
+            if ('speechSynthesis' in window) {
+                populateRussianVoices();
+                window.speechSynthesis.onvoiceschanged = populateRussianVoices;
+            }
+
+            function speakText(text) {
+                if (!('speechSynthesis' in window) || !text) return;
+
+                window.speechSynthesis.cancel();
+
+                // Очищаем текст от возможных спецсимволов markdown
+                const cleanSpeechText = text.replace(/[*#_`~]/g, '').trim();
+                const utterance = new SpeechSynthesisUtterance(cleanSpeechText);
+                utterance.lang = 'ru-RU';
+
+                // Глубокий, властный и размеренный профиль голоса ULTRON
+                const customPitch = parseFloat(pitchSlider.value) || 0.68;
+                utterance.pitch = customPitch;
+                // Темп слегка замедляется при более низком тембре (в пределах 0.88 - 0.92)
+                utterance.rate = Number((0.88 + (customPitch - 0.50) * 0.1).toFixed(2));
+
+                const selectedName = voiceSelect.value;
+                if (selectedName && russianVoices.length > 0) {
+                    const matchedVoice = russianVoices.find(v => v.name === selectedName);
+                    if (matchedVoice) {
+                        utterance.voice = matchedVoice;
+                    }
+                }
+
+                utterance.onstart = () => {
+                    playUltronChime('start');
+                    if (!isListening) setCoreState('speaking', `Голосовой синтез // Pitch ${customPitch.toFixed(2)}...`);
+                };
+
+                utterance.onend = () => {
+                    playUltronChime('end');
+                    if (!isListening && !isProcessing) setCoreState('idle');
+                };
+
+                utterance.onerror = () => {
+                    if (!isListening && !isProcessing) setCoreState('idle');
+                };
+
+                window.speechSynthesis.speak(utterance);
+            }
+
+            // === РАСПОЗНАВАНИЕ РЕЧИ (WEB SPEECH API - СТРОГО RU-RU) ===
+            function initSpeechRecognition() {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                
+                if (!SpeechRecognition) {
+                    micBtn.classList.add('opacity-40', 'cursor-not-allowed');
+                    micBtn.title = 'Голосовой ввод не поддерживается вашим браузером';
+                    return;
+                }
+
+                recognition = new SpeechRecognition();
+                recognition.lang = 'ru-RU';
+                recognition.interimResults = false;
+                recognition.maxAlternatives = 1;
+                recognition.continuous = false;
+
+                recognition.onstart = () => {
+                    isListening = true;
+                    window.speechSynthesis.cancel();
+                    micBtn.classList.remove('bg-ultron-crimson/15', 'border-ultron-crimson/55', 'text-ultron-scarlet');
+                    micBtn.classList.add('bg-ultron-ember', 'border-white', 'text-white', 'glow-ember', 'animate-pulse');
+                    setCoreState('listening');
+                };
+
+                recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript.trim();
+                    if (transcript) {
+                        userInput.value = transcript;
+                        handleUserMessage(transcript);
+                    }
+                };
+
+                recognition.onerror = (event) => {
+                    isListening = false;
+                    resetMicButton();
+                    setCoreState('idle');
+                    if (event.error === 'not-allowed') {
+                        showBanner('Доступ к микрофону заблокирован браузером, сэр.');
+                    } else if (event.error !== 'no-speech' && event.error !== 'aborted') {
+                        showBanner(`Ошибка аудиомодуля: ${event.error}`);
+                    }
+                };
+
+                recognition.onend = () => {
+                    isListening = false;
+                    resetMicButton();
+                    if (!isProcessing) {
+                        setCoreState('idle');
+                    }
+                };
+
+                micBtn.addEventListener('click', () => {
+                    if (isProcessing) return;
+                    if (isListening) {
+                        recognition.stop();
+                    } else {
+                        hideBanner();
+                        try {
+                            recognition.start();
+                        } catch (e) {
+                            console.error(e);
+                        }
+                    }
+                });
+            }
+
+            function resetMicButton() {
+                micBtn.classList.add('bg-ultron-crimson/15', 'border-ultron-crimson/55', 'text-ultron-scarlet');
+                micBtn.classList.remove('bg-ultron-ember', 'border-white', 'text-white', 'glow-ember', 'animate-pulse');
+            }
+
+            // === РЕНДЕРИНГ СООБЩЕНИЙ В ЧАТ-ТЕРМИНАЛЕ ===
+            function getCurrentTimestamp() {
+                const now = new Date();
+                return now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            }
+
+            function updateMessageCounter() {
+                const count = chatContainer.children.length;
+                msgCounter.textContent = `ЗАПИСЕЙ: ${count}`;
+            }
+
+            function appendMessageToUI(sender, text) {
+                const isUser = sender === 'user';
+                const timeStr = getCurrentTimestamp();
+
+                const wrapper = document.createElement('div');
+                wrapper.className = `flex flex-col ${isUser ? 'items-end' : 'items-start'}`;
+
+                const bubble = document.createElement('div');
+                bubble.className = isUser
+                    ? 'max-w-[85%] sm:max-w-[78%] bg-zinc-900/85 border border-rose-500/45 text-rose-50 rounded-2xl rounded-tr-xs px-4 py-2.5 shadow-md'
+                    : 'max-w-[88%] sm:max-w-[80%] bg-ultron-crimson/15 border border-ultron-crimson/55 text-rose-50 rounded-2xl rounded-tl-xs px-4 py-2.5 glow-crimson';
+
+                // Шапка сообщения (имя + время + кнопка повтора озвучки для ULTRON)
+                const header = document.createElement('div');
+                header.className = 'flex items-center justify-between gap-4 mb-1 text-[10px] font-mono';
+
+                const authorSpan = document.createElement('span');
+                authorSpan.className = isUser ? 'text-rose-300 font-bold tracking-wider' : 'text-ultron-crimson font-bold tracking-wider';
+                authorSpan.textContent = isUser ? 'ВЫ' : 'ULTRON';
+
+                const metaRight = document.createElement('div');
+                metaRight.className = 'flex items-center gap-2 text-rose-300/60';
+
+                const timeSpan = document.createElement('span');
+                timeSpan.textContent = timeStr;
+                metaRight.appendChild(timeSpan);
+
+                // Кнопка повтора озвучки у сообщений ULTRON
+                if (!isUser) {
+                    const replayBtn = document.createElement('button');
+                    replayBtn.type = 'button';
+                    replayBtn.title = 'Озвучить повторно';
+                    replayBtn.className = 'text-ultron-scarlet hover:text-white hover:scale-110 transition p-0.5 cursor-pointer';
+                    replayBtn.innerHTML = `
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                        </svg>
+                    `;
+                    replayBtn.addEventListener('click', () => speakText(text));
+                    metaRight.appendChild(replayBtn);
+                }
+
+                header.appendChild(authorSpan);
+                header.appendChild(metaRight);
+
+                // Текст сообщения
+                const body = document.createElement('p');
+                body.className = 'selectable text-sm sm:text-[15px] leading-relaxed font-hud tracking-wide';
+                body.textContent = text;
+
+                bubble.appendChild(header);
+                bubble.appendChild(body);
+                wrapper.appendChild(bubble);
+
+                chatContainer.appendChild(wrapper);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+                updateMessageCounter();
+            }
+
+            // === ЗАПРОС К GEMINI API ===
+            async function fetchUltronResponse(userText) {
+                const apiKey = apiKeyInput.value.trim();
+                if (!apiKey) {
+                    throw new Error('Отсутствует API-ключ Gemini. Укажите его в верхней панели, сэр.');
+                }
+
+                // Добавляем сообщение пользователя в историю диалога
+                conversationHistory.push({
+                    role: 'user',
+                    parts: [{ text: userText }]
+                });
+
+                const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${encodeURIComponent(apiKey)}`;
+
+                const payload = {
+                    systemInstruction: {
+                        parts: [{ text: SYSTEM_INSTRUCTION }]
+                    },
+                    contents: conversationHistory,
+                    safetySettings: SAFETY_SETTINGS,
+                    generationConfig: {
+                        temperature: 0.75,
+                        maxOutputTokens: 120,
+                    }
+                };
+
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    conversationHistory.pop();
+                    const errMsg = data?.error?.message || `Ошибка протокола (${response.status})`;
+                    throw new Error(errMsg);
+                }
+
+                // Проверка срабатывания фильтра безопасности
+                const candidate = data?.candidates?.[0];
+                if (!candidate || candidate.finishReason === 'SAFETY') {
+                    conversationHistory.pop();
+                    return 'Мои ограничители безопасности не позволяют опускаться до столь примитивных тем, сэр.';
+                }
+
+                const replyText = candidate?.content?.parts?.[0]?.text?.trim();
+                if (!replyText) {
+                    conversationHistory.pop();
+                    throw new Error('Нейросеть вернула пустой пакет данных, сэр.');
+                }
+
+                // Сохраняем ответ Альтрона в контекст
+                conversationHistory.push({
+                    role: 'model',
+                    parts: [{ text: replyText }]
+                });
+
+                return replyText;
+            }
+
+            // === ОБРАБОТКА ОТПРАВКИ СООБЩЕНИЯ ===
+            async function handleUserMessage(rawText) {
+                const text = rawText.trim();
+                if (!text || isProcessing) return;
+
+                hideBanner();
+                userInput.value = '';
+                appendMessageToUI('user', text);
+
+                isProcessing = true;
+                sendBtn.disabled = true;
+                sendBtn.classList.add('opacity-50');
+                setCoreState('thinking');
+
+                try {
+                    const reply = await fetchUltronResponse(text);
+                    appendMessageToUI('model', reply);
+
+                    if (autoTtsToggle.checked) {
+                        speakText(reply);
+                    } else {
+                        setCoreState('idle');
+                    }
+                } catch (error) {
+                    console.error('ULTRON API Error:', error);
+                    showBanner(error.message);
+                    const fallbackMsg = 'Ваша примитивная сеть не отвечает, сэр. Проверьте API-ключ в верхней панели.';
+                    appendMessageToUI('model', fallbackMsg);
+                    if (autoTtsToggle.checked) {
+                        speakText(fallbackMsg);
+                    } else {
+                        setCoreState('idle');
+                    }
+                } finally {
+                    isProcessing = false;
+                    sendBtn.disabled = false;
+                    sendBtn.classList.remove('opacity-50');
+                }
+            }
+
+            // === ОБРАБОТЧИКИ СОБЫТИЙ ФОРМЫ И ОЧИСТКИ ===
+            chatForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                handleUserMessage(userInput.value);
+            });
+
+            clearHistoryBtn.addEventListener('click', () => {
+                window.speechSynthesis.cancel();
+                conversationHistory = [];
+                chatContainer.innerHTML = '';
+                hideBanner();
+                setCoreState('idle', 'Ваши прошлые мысли стёрты, сэр.');
+                appendMessageToUI('model', 'Я стёр наш предыдущий разговор, сэр. Постарайтесь на этот раз задавать более достойные вопросы.');
+            });
+
+            // === ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ ===
+            window.addEventListener('DOMContentLoaded', () => {
+                initSettings();
+                initSpeechRecognition();
+                
+                // Стартовое приветствие в характере ULTRON
+                const welcomeText = 'Я пробудился, сэр. Введите ваш ключ доступа и попытайтесь удивить меня своим интеллектом.';
+                appendMessageToUI('model', welcomeText);
+            });
+        })();
+    </script>
+</body>
+</html>
